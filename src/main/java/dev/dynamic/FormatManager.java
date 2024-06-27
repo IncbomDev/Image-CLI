@@ -1,24 +1,40 @@
 package dev.dynamic;
 
-import javax.imageio.ImageIO;
+import org.apache.commons.imaging.ImageFormats;
+import org.apache.commons.imaging.ImageReadException;
+import org.apache.commons.imaging.ImageWriteException;
+import org.apache.commons.imaging.Imaging;
+
 import java.awt.image.BufferedImage;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.File;
 import java.io.IOException;
-import java.util.Objects;
 
 public class FormatManager {
 
-    public static boolean convertFile(String inputFilePath, String outputFormat, String outputFile) throws IOException {
-        BufferedImage image = ImageIO.read(new FileInputStream(inputFilePath));
-        System.out.println(WDirManager.getCurrentWdir() + "/" + outputFile);
+    public static ImageFormats getImageFormat(String fileName) {
+        String extension = fileName.substring(fileName.lastIndexOf(".") + 1);
+        try {
+            return ImageFormats.valueOf(extension.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+    }
 
-        if (Objects.equals(outputFormat, "jpg") || Objects.equals(outputFormat, "jpeg")) {
-            BufferedImage outputImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB);
-            outputImage.createGraphics().drawImage(image, 0, 0, null);
-            image = outputImage;
+    public static boolean convertFile(String inputFilePath, String outputFile, String outputFormat) throws IOException, ImageReadException, ImageWriteException {
+        File inputFile = new File(inputFilePath);
+        File outputF = new File(WDirManager.getCurrentWdir() + "/" + outputFile);
+
+        BufferedImage image = Imaging.getBufferedImage(inputFile);
+
+        ImageFormats format = getImageFormat(outputFormat);
+
+        if (format == null) {
+            System.err.println("Invalid output format");
+            return false;
         }
 
-        return ImageIO.write(image, outputFormat, new FileOutputStream(WDirManager.getCurrentWdir() + "/" + outputFile));
+        Imaging.writeImage(image, outputF, getImageFormat(inputFile.getName()), null);
+        return true;
     }
+
 }

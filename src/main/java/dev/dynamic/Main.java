@@ -54,8 +54,10 @@ public class Main {
                 break;
             }
 
+            boolean found = false;
             for (String command : Registry.commands.keySet()) {
                 if (line.startsWith(command)) {
+                    found = true;
                     Command cmd = Registry.getCommand(command);
                     String[] inputArgs = line.substring(command.length()).trim().split(" ");
                     if (cmd.getRequiredArgs().length > 0 && (inputArgs.length != cmd.getRequiredArgs().length || inputArgs[0].isEmpty())) {
@@ -63,7 +65,12 @@ public class Main {
                         continue;
                     }
                     cmd.execute(inputArgs);
+                    break;
                 }
+            }
+
+            if (!found) {
+                System.out.println("Command not found. Type 'help' to see a list of available commands.");
             }
 
             reader.getHistory().add(line);

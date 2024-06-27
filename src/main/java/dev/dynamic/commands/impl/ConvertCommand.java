@@ -3,6 +3,8 @@ package dev.dynamic.commands.impl;
 import dev.dynamic.FormatManager;
 import dev.dynamic.WDirManager;
 import dev.dynamic.commands.Command;
+import org.apache.commons.imaging.ImageReadException;
+import org.apache.commons.imaging.ImageWriteException;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,16 +14,17 @@ public class ConvertCommand extends Command {
     @Override
     public void execute(String[] args) {
         String input = args[0];
-        String outputFormat = args[1];
-        String output = args[2];
+        String output = args[1];
 
         String inputFilePath = WDirManager.getCurrentWdir() + "/" + input;
 
         boolean success;
 
+        String type = output.substring(output.lastIndexOf(".") + 1);
+
         try {
-            success = FormatManager.convertFile(inputFilePath, outputFormat, output);
-        } catch (IOException e) {
+            success = FormatManager.convertFile(inputFilePath, output, type);
+        } catch (IOException | ImageReadException | ImageWriteException e) {
             System.out.println("An error occurred while converting the file\n" + e.getMessage());
             return;
         }
@@ -66,6 +69,6 @@ public class ConvertCommand extends Command {
 
     @Override
     public String[] getRequiredArgs() {
-        return new String[]{"input_file", "output_format", "output_file"};
+        return new String[]{"input_file", "output_file"};
     }
 }
