@@ -22,7 +22,9 @@ public class FormatManager {
 
     public static boolean convertFile(String inputFilePath, String outputFile, String outputFormat) throws IOException, ImageReadException, ImageWriteException {
         File inputFile = new File(inputFilePath);
-        File outputF = new File(WDirManager.getCurrentWdir() + "/" + outputFile);
+        File outputF = new File(outputFile);
+
+        outputF.getParentFile().mkdirs();
 
         BufferedImage image = Imaging.getBufferedImage(inputFile);
 

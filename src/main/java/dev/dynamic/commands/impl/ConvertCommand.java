@@ -17,13 +17,14 @@ public class ConvertCommand extends Command {
         String output = args[1];
 
         String inputFilePath = WDirManager.getCurrentWdir() + "/" + input;
+        String outputFilePath = WDirManager.getCurrentWdir() + "/" + output;
 
         boolean success;
 
         String type = output.substring(output.lastIndexOf(".") + 1);
 
         try {
-            success = FormatManager.convertFile(inputFilePath, output, type);
+            success = FormatManager.convertFile(inputFilePath, outputFilePath, type);
         } catch (IOException | ImageReadException | ImageWriteException e) {
             System.out.println("An error occurred while converting the file\n" + e.getMessage());
             return;

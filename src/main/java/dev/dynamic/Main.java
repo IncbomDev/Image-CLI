@@ -8,6 +8,7 @@ import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 public class Main {
 
@@ -59,7 +60,8 @@ public class Main {
                 if (line.startsWith(command)) {
                     found = true;
                     Command cmd = Registry.getCommand(command);
-                    String[] inputArgs = line.substring(command.length()).trim().split(" ");
+                    String[] inputArgs = line.substring(command.length()).trim().split("\\s+");
+
                     if (cmd.getRequiredArgs().length > 0 && (inputArgs.length != cmd.getRequiredArgs().length || inputArgs[0].isEmpty())) {
                         System.out.println("Invalid number of arguments. Expected: " + String.join(", ", cmd.getRequiredArgs()));
                         continue;
